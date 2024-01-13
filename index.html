@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+
+        #game-container {
+            text-align: center;
+            padding: 20px;
+            border: 2px solid #333;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #topics-container, #question-container, #result-container {
+            display: none;
+        }
+
+        button {
+            padding: 10px;
+            margin-top: 10px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button.next {
+            padding: 15px;
+            font-size: 18px;
+        }
+
+        #back-to-topics {
+            margin-top: 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-container">
+        <div id="topics-container">
+            <h2>Choose a Topic:</h2>
+            <div id="topic-buttons"></div>
+        </div>
+
+        <div id="question-container">
+            <div id="topic-name"></div>
+            <h2 id="question"></h2>
+            <button class="next" onclick="nextQuestion()">Next</button>
+            <div id="back-to-topics" onclick="showTopics()">Back to Topics</div>
+        </div>
+
+        <div id="result-container">
+            <h2>Game Finished!</h2>
+            <button class="next" onclick="showTopics()">Finish</button>
+        </div>
+    </div>
+
+    <script>
+        let topics = ['Topic 1', 'Topic 2', 'Topic 3'];
+        let questions = {
+            'Topic 1': ['Question 1a', 'Question 1b', 'Question 1c'],
+            'Topic 2': ['Question 2a', 'Question 2b', 'Question 2c'],
+            'Topic 3': ['Question 3a', 'Question 3b', 'Question 3c'],
+        };
+        let emotions = ['Happy', 'Sad', 'Excited', 'Surprised', 'Angry'];
+        let currentTopicIndex = 0;
+        let currentQuestionIndex = 0;
+
+        function getRandomEmotions() {
+            const randomEmotion = emotions[Math.floor(Math.random() * emotions.length)];
+            return `Perform with emotion:\n${randomEmotion}`;
+        }
+
+        function showNextQuestion() {
+            const topic = topics[currentTopicIndex];
+            const question = getQuestion(topic);
+            const emotionsText = getRandomEmotions();
+
+            document.getElementById('topic-name').innerText = `Topic: ${topic}`;
+            document.getElementById('question').innerText = `${question}\n${emotionsText}`;
+        }
+
+        function getQuestion(topic) {
+            return questions[topic][currentQuestionIndex];
+        }
+
+        function nextQuestion() {
+            currentQuestionIndex++;
+
+            if (currentQuestionIndex < 3) {
+                showNextQuestion();
+            } else {
+                document.getElementById('question-container').style.display = 'none';
+                document.getElementById('result-container').style.display = 'block';
+            }
+        }
+
+        function showTopics() {
+            document.getElementById('result-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'none';
+            document.getElementById('topics-container').style.display = 'block';
+        }
+
+        function startGame(index) {
+            currentTopicIndex = index;
+            currentQuestionIndex = 0;
+
+            document.getElementById('topics-container').style.display = 'none';
+            document.getElementById('question-container').style.display = 'block';
+
+            showNextQuestion();
+        }
+
+        // Dynamically load topic buttons
+        const topicButtonsContainer = document.getElementById('topic-buttons');
+        topics.forEach((topic, index) => {
+            const button = document.createElement('button');
+            button.textContent = topic;
+            button.onclick = () => startGame(index);
+            topicButtonsContainer.appendChild(button);
+        });
+
+        // Call this function to start the game when the page loads
+        showTopics();
+    </script>
+</body>
+</html>
